@@ -1,0 +1,3 @@
+[submodule "third-party/hashstream"]
+	path = third-party/hashstream
+	url = git://github.com/rjw57/hashstream.git

@@ -1,0 +1,12 @@
+if has("spell")
+	autocmd Filetype c,cpp,cs.java,objc set spell
+	autocmd Filetype c,cpp,cs.java,objc set spelllang=en_gb
+endif
+
+if has("colorcolumn")
+	set colorcolumn=120
+endif
+
+highlight ExtraWhitespace ctermbg=red guibg=red
+:match ExtraWhitespace /\s\+$\| \+\ze\t\|[^\t]\zs\t\+/
+
