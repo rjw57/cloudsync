@@ -1,3 +1,5 @@
+#include <ctime>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <hashstream/hashstream.hpp>
 #include <cloudsync/tree.hpp>
@@ -24,6 +26,7 @@ entry::entry(const fs::directory_entry& de)
 	: filename(de.path().filename().generic_string())
 	, hash("")
 	, file_size(0)
+	, last_modified_time(fs::last_write_time(de.path()))
 {
 	if(de.status().type() == fs::regular_file)
 	{
@@ -34,7 +37,9 @@ entry::entry(const fs::directory_entry& de)
 
 std::ostream& operator << (std::ostream& os, const entry& e)
 {
-	os << std::setw(64) << e.hash << ' ' << std::setw(32) << e.file_size << ' ' << e.filename;
+	boost::posix_time::ptime pt = boost::posix_time::from_time_t(e.last_modified_time);
+	os << std::setw(64) << e.hash << ' ' << std::setw(8) << e.file_size
+		<< ' ' << pt << ' ' << e.filename;
 
 	return os;
 }

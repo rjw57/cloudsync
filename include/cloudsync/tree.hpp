@@ -33,6 +33,9 @@ struct entry
 
 	/// @brief The size of the file in bytes.
 	uintmax_t file_size;
+
+	/// @brief The time the file was last modified.
+	std::time_t last_modified_time;
 };
 
 std::ostream& operator << (std::ostream& os, const entry& e);
