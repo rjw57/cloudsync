@@ -1,3 +1,7 @@
+set et
+set sw=4
+set sts=4
+
 if has("spell")
 	autocmd Filetype c,cpp,cs.java,objc set spell
 	autocmd Filetype c,cpp,cs.java,objc set spelllang=en_gb
