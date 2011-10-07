@@ -1,6 +1,7 @@
 module Main                                 ( main ) where
 
 import Control.Exception                    ( IOException )
+import Control.Monad                        ( when, unless )
 import System.Console.GetOpt
 import System.Environment                   ( getArgs, getProgName )
 import System.Exit                          ( exitFailure, exitSuccess )
@@ -22,7 +23,7 @@ data Flag = Help
 
 -- |Available command line options
 options :: [OptDescr Flag]
-options = [ Option ['h'] ["help"] (NoArg Help) "Show a brief usage summary."
+options = [ Option "h" ["help"] (NoArg Help) "Show a brief usage summary."
           ]
 
 -- |Handle any state change implied by a command-line flag
@@ -36,7 +37,7 @@ usage pn = unlines [
       usageInfo (printf "Usage: %s <command> [<arguments>]" pn) options
     , "Available commands:"
     , Cmd.descTable commands
-    , (printf "See `%s help <command>' for more information on a specific command." pn)
+    , printf "See `%s help <command>' for more information on a specific command." pn
     ]
 
 -- |Print a brief top-level usage summary to the console.
@@ -45,27 +46,27 @@ printUsage = hPutUsage stdout
 
 -- |Print a brief top-level usage summary to a filehandle
 hPutUsage :: Handle -> IO ()
-hPutUsage h = getProgName >>= (\pn -> hPutStr h $ usage pn)
+hPutUsage h = getProgName >>= (hPutStr h . usage)
 
 -- ----- COMMANDS -----
 
 -- HELP
 
 -- |The help command
-helpCmd :: [String] -> IO (Bool)
+helpCmd :: [String] -> IO Bool
 helpCmd _ = printUsage >> return True
 
 -- INFO
 
 -- |The info command
-infoCmd :: [String] -> IO (Bool)
+infoCmd :: [String] -> IO Bool
 infoCmd args = print args >> return True
 
 -- ----- MAIN PROGRAM -----
 
 -- |Run the named command with the provided argument list. Return a flag
 -- indicating successful completion.
-runCmd :: String -> [String] -> IO (Bool)
+runCmd :: String -> [String] -> IO Bool
 runCmd cmd args = do
     rv <- Cmd.run commands cmd args
     case rv of
@@ -88,22 +89,16 @@ main = do
     mapM_ handleFlag opts
 
     -- if there were any errors, show them
-    if length errs /= 0
-        then do
-            -- print each error on one line
-            pn <- getProgName
-            mapM_ (\m -> hPutStr stderr (printf "%s: %s" pn m)) errs
-            hPutUsage stderr
-            exitFailure
-        else return()
+    unless (null errs) $ do
+        -- print each error on one line
+        pn <- getProgName
+        mapM_ (hPutStr stderr . printf "%s: %s" pn) errs
+        hPutUsage stderr
+        exitFailure
 
     -- if no arguments given, print a usage summary and fail
-    if length nonopts == 0
-        then (hPutUsage stderr >> exitFailure)
-        else return ()
+    when (null nonopts) $ hPutUsage stderr >> exitFailure
 
     -- run the specified command
     success <- runCmd (head nonopts) (tail nonopts)
-    if not success
-        then exitFailure
-        else return ()
+    unless success exitFailure

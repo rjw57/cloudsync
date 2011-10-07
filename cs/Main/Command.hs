@@ -9,15 +9,16 @@ module Main.Command ( Command(Command)
                     , named
                     ) where
 
-import Data.List    ( sortBy )
+import Data.Function    ( on )
+import Data.List        ( sortBy )
 import System.IO
-import Text.Printf  ( printf )
+import Text.Printf      ( printf )
 
 -- |Data type for a command handler.
 data Command = Command {
     -- |A function taking a list of command arguments and performing the
     -- command within the IO monad.
-      action    :: [String] -> IO (Bool)
+      action    :: [String] -> IO Bool
 
     -- |The name of the command.
     , name      :: String
@@ -42,7 +43,7 @@ named cs n =
 -- |Return a string listing all commands and including a brief descriptions.
 descTable :: [Command] -> String
 descTable cs =
-        unlines (map descStr (sortBy (\c1 c2 -> compare (name c1) (name c2)) cs))
+        unlines $ map descStr (sortBy (compare `on` name) cs)
     where
         maxLen = maximum $ map (length . name) cs
         descStr c = printf "   %*s   %s" maxLen (name c) (brief c)
@@ -53,7 +54,7 @@ descTable cs =
 run :: [Command] -> String -> [String] -> IO (Maybe Bool)
 run cs n args =
         case mc of
-            Just c  -> (action c) args >>= (\rv -> return $ Just rv)
+            Just c  -> fmap Just (action c args)
             Nothing -> return Nothing
     where
         mc = named cs n
