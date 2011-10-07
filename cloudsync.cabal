@@ -57,6 +57,10 @@ Executable cs
   -- Modules not exported by this package.
   Other-modules:     Main.Command
 
+Library
+  Build-depends:     base
+  Exposed-Modules:   Data.CloudSync.Cabinet
+
 Executable mksnapshot
   hs-source-dirs:    mksnapshot
 
