@@ -45,6 +45,17 @@ Build-type:          Simple
 -- Constraint on the version of Cabal needed to build this package.
 Cabal-version:       >=1.2
 
+Executable cs
+  hs-source-dirs:    cs
+
+  -- .hs or .lhs file containing the Main module.
+  Main-is:           cs.hs
+
+  -- Packages needed in order to build this package.
+  Build-depends:     base
+
+  -- Modules not exported by this package.
+  Other-modules:     Main.Command
 
 Executable mksnapshot
   hs-source-dirs:    mksnapshot
