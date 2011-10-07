@@ -92,7 +92,7 @@ main = do
         then do
             -- print each error on one line
             pn <- getProgName
-            mapM_ (\m -> hPutStrLn stderr (printf "%s: %s" pn m)) errs
+            mapM_ (\m -> hPutStr stderr (printf "%s: %s" pn m)) errs
             hPutUsage stderr
             exitFailure
         else return()
