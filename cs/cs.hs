@@ -34,7 +34,9 @@ handleFlag Help = printUsage >> exitSuccess
 -- information.
 usage :: String -> String
 usage pn = unlines [
-      usageInfo (printf "Usage: %s <command> [<arguments>]" pn) options
+      printf "Usage: %s <command> [<arguments>]" pn
+    , ""
+    , usageInfo "Allowed options:" options
     , "Available commands:"
     , Cmd.descTable commands
     , printf "See `%s help <command>' for more information on a specific command." pn
