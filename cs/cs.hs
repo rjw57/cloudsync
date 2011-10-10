@@ -1,6 +1,5 @@
 module Main                                 ( main ) where
 
-import Control.Exception                    ( IOException )
 import Control.Monad                        ( when, unless )
 import System.Console.GetOpt
 import System.Environment                   ( getArgs, getProgName )
@@ -9,11 +8,12 @@ import System.IO
 import Text.Printf                          ( printf )
 
 import Main.Command as Cmd
+import Main.Command.Init as Init
+import Main.Command.Help as Help
 
 -- |List of all commands
-commands = [ Cmd.Command helpCmd "help" "Show usage for a particular command."
-           , Cmd.Command infoCmd "init" "Initialise a directory for synchronising."
-           , Cmd.Command infoCmd "info" "Show information on a cabinet directory."
+commands = [ Help.command commands
+           , Init.command
            ]
 
 -- ----- COMMAND LINE OPTIONS -----
@@ -49,20 +49,6 @@ printUsage = hPutUsage stdout
 -- |Print a brief top-level usage summary to a filehandle
 hPutUsage :: Handle -> IO ()
 hPutUsage h = getProgName >>= (hPutStr h . usage)
-
--- ----- COMMANDS -----
-
--- HELP
-
--- |The help command
-helpCmd :: [String] -> IO Bool
-helpCmd _ = printUsage >> return True
-
--- INFO
-
--- |The info command
-infoCmd :: [String] -> IO Bool
-infoCmd args = print args >> return True
 
 -- ----- MAIN PROGRAM -----
 

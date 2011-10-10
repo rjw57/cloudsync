@@ -43,7 +43,7 @@ Build-type:          Simple
 -- Extra-source-files:
 
 -- Constraint on the version of Cabal needed to build this package.
-Cabal-version:       >=1.2
+Cabal-version:       >=1.8
 
 Executable cs
   hs-source-dirs:    cs
@@ -52,13 +52,13 @@ Executable cs
   Main-is:           cs.hs
 
   -- Packages needed in order to build this package.
-  Build-depends:     base
+  Build-depends:     base, directory, cloudsync
 
   -- Modules not exported by this package.
   Other-modules:     Main.Command
 
 Library
-  Build-depends:     base
+  Build-depends:     base, directory, filepath
   Exposed-Modules:   Data.CloudSync.Cabinet
 
 Executable mksnapshot

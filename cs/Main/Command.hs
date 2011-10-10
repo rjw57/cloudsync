@@ -2,6 +2,7 @@ module Main.Command ( Command(Command)
                     , action
                     , name
                     , brief
+                    , full
 
                     , run
                     , all
@@ -25,6 +26,9 @@ data Command = Command {
 
     -- |A brief one-line description.
     , brief     :: String
+
+    -- |A filler multi-line description. One line per element of the list.
+    , full      :: [String]
     }
 
 -- |Return the Command record corresponding to the given name.
@@ -46,7 +50,7 @@ descTable cs =
         unlines $ map descStr (sortBy (compare `on` name) cs)
     where
         maxLen = maximum $ map (length . name) cs
-        descStr c = printf "   %*s   %s" maxLen (name c) (brief c)
+        descStr c = printf "  %*s  %s" maxLen (name c) (brief c)
 
 -- |Call a command given a name and arguments list. Return the a flag
 -- indicating success or Nothing if no command matching that name could be
